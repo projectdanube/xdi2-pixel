@@ -7,8 +7,8 @@ This is work in progress.
 
 ### Information
 
-* [Translation](https://github.com/projectdanube/xdi2-zephyr/wiki/Translation)
-* [Code Example](https://github.com/projectdanube/xdi2-zephyr/wiki/Code%20Example)
+* [Translation](https://github.com/projectdanube/xdi2-pixel/wiki/Translation)
+* [Code Example](https://github.com/projectdanube/xdi2-pixel/wiki/Code%20Example)
 
 ### How to build
 
