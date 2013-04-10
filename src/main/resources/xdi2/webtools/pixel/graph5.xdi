@@ -1,2 +1,3 @@
-allow all events on any channel;
-deny cloudos:unsubscribe events on channel =!345 if raised by cloud =!1212;
+cloud =!2222 denies cloudos:{subscribe, unsubscribe} events 
+		on channel =!345 
+		if channel relationship is in [+owner, +friend+close];

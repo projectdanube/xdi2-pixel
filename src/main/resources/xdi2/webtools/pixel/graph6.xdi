@@ -1,0 +1,2 @@
+allow all events on any channel;
+deny cloudos:unsubscribe events on channel =!345 if raised by cloud =!1212;

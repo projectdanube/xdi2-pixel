@@ -19,11 +19,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import xdi2.core.Graph;
+import xdi2.core.features.contextfunctions.XdiAbstractEntity.MappingContextNodeXdiEntityIterator;
 import xdi2.core.features.linkcontracts.LinkContract;
+import xdi2.core.features.linkcontracts.operator.Operator.MappingRelationOperatorIterator;
+import xdi2.core.features.linkcontracts.policy.Policy.MappingXdiEntityPolicyIterator;
 import xdi2.core.impl.memory.MemoryGraphFactory;
 import xdi2.core.io.XDIWriter;
 import xdi2.core.io.XDIWriterRegistry;
 import xdi2.core.io.writers.XDIDisplayWriter;
+import xdi2.core.util.iterators.IteratorCounter;
 import xdi2.pixel.PixelParser;
 import xdi2.pixel.PixelPolicy;
 
@@ -116,14 +120,16 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 		if ("on".equals(writePretty)) xdiWriterParameters.setProperty(XDIWriterRegistry.PARAMETER_PRETTY, "1");
 
 		XDIWriter xdiResultWriter = XDIWriterRegistry.forFormat(resultFormat, xdiWriterParameters);
+		PixelPolicy pixelPolicy = null;
+		LinkContract linkContract = null;
 		Graph graph = null;
 
 		try {
 
 			StringWriter writer = new StringWriter();
 
-			PixelPolicy pixelPolicy = PixelParser.pixel(input);
-			LinkContract linkContract = pixelPolicy.getLinkContract();
+			pixelPolicy = PixelParser.pixel(input);
+			linkContract = pixelPolicy.getLinkContract();
 
 			graph = linkContract.getContextNode().getGraph();
 
@@ -142,10 +148,8 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 
 		if (graph != null) {
 
-			stats += Integer.toString(graph.getRootContextNode().getAllContextNodeCount()) + " context nodes. ";
-			stats += Integer.toString(graph.getRootContextNode().getAllRelationCount()) + " relations. ";
-			stats += Integer.toString(graph.getRootContextNode().getAllLiteralCount()) + " literals. ";
-			stats += Integer.toString(graph.getRootContextNode().getAllStatementCount()) + " statements. ";
+			stats += Integer.toString(new IteratorCounter(new MappingXdiEntityPolicyIterator(new MappingContextNodeXdiEntityIterator(graph.getRootContextNode().getAllContextNodes()))).count()) + " policies.";
+			stats += Integer.toString(new IteratorCounter(new MappingRelationOperatorIterator(graph.getRootContextNode().getAllRelations())).count()) + " operators.";
 
 			graph.close();
 		}

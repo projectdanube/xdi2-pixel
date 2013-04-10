@@ -50,8 +50,8 @@ public class PixelPolicy {
 		List<?> policy_stmts = (List<?>) hashMap.get("policy_stmts");
 		if (policy_stmts == null) return linkContract;
 
-		int countDeny = countEffect(policy_stmts, "deny");
-		int countAllow = countEffect(policy_stmts, "allow");
+		int countDeny = countDenyEffect(policy_stmts);
+		int countAllow = countAllowEffect(policy_stmts);
 
 		for (Object policy_stmt : policy_stmts) {
 
@@ -61,7 +61,7 @@ public class PixelPolicy {
 
 			Policy policy = policyRoot;
 
-			if ("allow".equals(effect)) {
+			if (isAllow(effect)) {
 
 				if (countDeny > 0) {
 
@@ -74,7 +74,7 @@ public class PixelPolicy {
 				}
 
 				policy = policy.createAndPolicy(countAllow == 1);
-			} else if ("deny".equals(effect)) {
+			} else if (isDeny(effect)) {
 
 				if (countAllow > 0) {
 
@@ -99,18 +99,40 @@ public class PixelPolicy {
 		return linkContract;
 	}
 
-	private static int countEffect(List<?> policy_stmts, String effect) {
+	private static int countDenyEffect(List<?> policy_stmts) {
 
 		int count = 0;
 
 		for (Object policy_stmt : policy_stmts) {
 
-			if (effect.equals(((Map<?, ?>) policy_stmt).get("effect"))) count++;
+			if (isDeny((String) ((Map<?, ?>) policy_stmt).get("effect"))) count++;
 		}
 
 		return count;
 	}
 
+	private static int countAllowEffect(List<?> policy_stmts) {
+
+		int count = 0;
+
+		for (Object policy_stmt : policy_stmts) {
+
+			if (isAllow((String) ((Map<?, ?>) policy_stmt).get("effect"))) count++;
+		}
+
+		return count;
+	}
+
+	private static boolean isDeny(String effect) {
+		
+		return "deny".equals(effect) || "denies".equals(effect);
+	}
+
+	private static boolean isAllow(String effect) {
+		
+		return "allow".equals(effect) || "allows".equals(effect);
+	}
+	
 	private static void translatePolicyStmt(Map<?, ?> policy_stmt, Policy policyEvent) throws PixelParserException {
 
 		if (policyEvent == null) throw new NullPointerException();
@@ -164,10 +186,9 @@ public class PixelPolicy {
 
 		Map<?, ?> condition = (Map<?, ?>) policy_stmt.get("condition");
 
-		condition_sense = (Boolean) condition.get("sense");
-
 		if (condition != null) {
 
+			condition_sense = (Boolean) condition.get("sense");
 			String condition_type = (String) condition.get("type");
 
 			if ("relationship_list".equals(condition_type)) {
@@ -216,11 +237,9 @@ public class PixelPolicy {
 
 			Policy policyConditionTypeRelationships = condition_type_relationships.size() > 1 ? policyEvent.createOrPolicy(false) : policyEvent;
 
-			XDI3Segment owner = XDI3Segment.create("=!1111");
-
 			for (Object condition_type_relationship : condition_type_relationships) {
 
-				XDI3Statement statementXri = XDI3Statement.create("" + owner + "/" + (String) condition_type_relationship + "/" + "{$from}");
+				XDI3Statement statementXri = XDI3Statement.create("" + channel_id + "/" + (String) condition_type_relationship + "/" + "{$from}");
 
 				if (Boolean.TRUE.equals(condition_sense))
 					TrueOperator.createTrueOperator(policyConditionTypeRelationships, GenericCondition.fromStatement(statementXri));

@@ -21,21 +21,11 @@
 
 	<h2>Information</h2>
 
-	<p>This tool can convert XDI documents between different serialization formats.</p>
+	<p>This is a tool to translate the (Pixel) personal cloud policy language to XDI link contracts.</p>
 
-	<p>Several example documents are available that can be loaded and converted.</p>
+	<p>Several example documents are available that can be loaded and translated.</p>
 
-	</div>
-
-    <div class="tabbertab">
-
-	<h2>Formats</h2>
-
-	<p><b>XDI/JSON</b><br>
-	JSON serialization of an XDI graph (default format).</p>
-
-	<p><b>XDI DISPLAY</b><br>
-	An enumeration of XDI statements in the graph.</p>
+	<p>For more information see <a href="https://github.com/kynetx/PolicyLanguage" target="_blank">https://github.com/kynetx/PolicyLanguage</a></p>
 
 	</div>
 	
