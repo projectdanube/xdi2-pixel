@@ -1,5 +1,1 @@
-(=!1111)/$ref/()
-=markus!<+name><<$string>>/<>/"Markus Sabadello"
-=markus!<+email><<$string>>/<>/"markus.sabadello@gmail.com"
-=markus/+friend/=drummond
-()/$is$ref/(=!1111)
+deny cloudos:unsubscribe events on channel =!345 if raised by cloud =!1212;

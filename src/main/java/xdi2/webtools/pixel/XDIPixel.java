@@ -1,5 +1,6 @@
 package xdi2.webtools.pixel;
 
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +103,8 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 		String writeInner = request.getParameter("writeInner");
 		String writePretty = request.getParameter("writePretty");
 		String input = request.getParameter("input");
-		String output = "";
+		String output1 = "";
+		String output2 = "";
 		String stats = "-1";
 		String error = null;
 
@@ -126,7 +129,8 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 
 			xdiResultWriter.write(graph, writer);
 
-			output = StringEscapeUtils.escapeHtml(writer.getBuffer().toString());
+			output1 = StringEscapeUtils.escapeHtml(writer.getBuffer().toString());
+			output2 = new JSONObject(pixelPolicy.getHashMap()).toString(2);
 		} catch (Exception ex) {
 
 			log.error(ex.getMessage(), ex);
@@ -135,12 +139,16 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 		}
 
 		stats = "";
-		stats += Integer.toString(graph.getRootContextNode().getAllContextNodeCount()) + " context nodes. ";
-		stats += Integer.toString(graph.getRootContextNode().getAllRelationCount()) + " relations. ";
-		stats += Integer.toString(graph.getRootContextNode().getAllLiteralCount()) + " literals. ";
-		stats += Integer.toString(graph.getRootContextNode().getAllStatementCount()) + " statements. ";
 
-		graph.close();
+		if (graph != null) {
+
+			stats += Integer.toString(graph.getRootContextNode().getAllContextNodeCount()) + " context nodes. ";
+			stats += Integer.toString(graph.getRootContextNode().getAllRelationCount()) + " relations. ";
+			stats += Integer.toString(graph.getRootContextNode().getAllLiteralCount()) + " literals. ";
+			stats += Integer.toString(graph.getRootContextNode().getAllStatementCount()) + " statements. ";
+
+			graph.close();
+		}
 
 		// display results
 
@@ -151,7 +159,8 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 		request.setAttribute("writeInner", writeInner);
 		request.setAttribute("writePretty", writePretty);
 		request.setAttribute("input", input);
-		request.setAttribute("output", output);
+		request.setAttribute("output1", output1);
+		request.setAttribute("output2", output2);
 		request.setAttribute("stats", stats);
 		request.setAttribute("error", error);
 

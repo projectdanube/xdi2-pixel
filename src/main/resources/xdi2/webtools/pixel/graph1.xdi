@@ -1,1 +1,1 @@
-=markus!<+email><<$string>>/<>/"markus.sabadello@gmail.com"
+allow cloudos:{subscribe, unsubscribe} events on channel =!23 if channel relationship is in [+friend, +relative];

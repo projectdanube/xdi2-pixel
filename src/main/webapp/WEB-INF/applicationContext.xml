@@ -12,11 +12,6 @@
 		<property name="interceptors">
 			<util:list>
 				<bean class="xdi2.server.interceptor.impl.DebugHttpTransportInterceptor" />
-				<bean class="xdi2.server.interceptor.impl.XriResolutionHttpTransportInterceptor">
-					<property name="resolvePath" value="/resolve" />
-					<property name="targetPath" value="/users" />
-					<property name="registryGraph" ref="registrygraph" />
-				</bean>
 			</util:list>
 		</property>
 	</bean>
@@ -31,24 +26,6 @@
 				<bean class="xdi2.server.spring.StringXDI3SubSegmentConverter" />
 				<bean class="xdi2.server.spring.StringXDI3XRefConverter" />
 			</list>
-		</property>
-	</bean>
-
-	<!-- MESSAGING TARGET at /mem-graph -->
-	<!-- MessagingTarget: GraphMessagingTarget backed by a MemoryGraph -->
-
-	<bean id="graphfactory1" class="xdi2.core.impl.memory.MemoryGraphFactory">
-	</bean>
-
-	<bean id="graph1" factory-bean="graphfactory1" factory-method="openGraph" />
-
-	<bean name="/mem-graph" class="xdi2.messaging.target.impl.graph.GraphMessagingTarget">
-		<property name="graph" ref="graph1" />
-		<property name="interceptors">
-			<util:list>
-				<bean class="xdi2.messaging.target.interceptor.impl.VariablesInterceptor" />
-				<bean class="xdi2.messaging.target.interceptor.impl.RefInterceptor" />
-			</util:list>
 		</property>
 	</bean>
 
