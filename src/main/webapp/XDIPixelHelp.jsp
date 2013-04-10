@@ -25,7 +25,12 @@
 
 	<p>Several example documents are available that can be loaded and translated.</p>
 
-	<p>For more information see <a href="https://github.com/kynetx/PolicyLanguage" target="_blank">https://github.com/kynetx/PolicyLanguage</a></p>
+	<p>For more information see:</p>
+	
+	<ul>
+		<li><a href="https://github.com/projectdanube/xdi2-pixel" target="_blank">https://github.com/projectdanube/xdi2-pixel</a></li>
+		<li><a href="https://github.com/kynetx/PolicyLanguage" target="_blank">https://github.com/kynetx/PolicyLanguage</a></li>
+	</ul>
 
 	</div>
 	

@@ -60,7 +60,7 @@
 		<%= request.getAttribute("stats") %>
 
 		<% if (request.getAttribute("output2") != null) { %>
-			Copy&amp;Paste: <textarea style="width: 100px; height: 1.2em; overflow: hidden"><%= request.getAttribute("output") != null ? request.getAttribute("output") : "" %></textarea>
+			Copy&amp;Paste: <textarea style="width: 100px; height: 1.2em; overflow: hidden"><%= request.getAttribute("output1") != null ? request.getAttribute("output1") : "" %></textarea>
 		<% } %>
 		</p>
 	<% } %>

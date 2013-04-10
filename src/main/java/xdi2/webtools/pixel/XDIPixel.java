@@ -148,8 +148,8 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 
 		if (graph != null) {
 
-			stats += Integer.toString(new IteratorCounter(new MappingXdiEntityPolicyIterator(new MappingContextNodeXdiEntityIterator(graph.getRootContextNode().getAllContextNodes()))).count()) + " policies.";
-			stats += Integer.toString(new IteratorCounter(new MappingRelationOperatorIterator(graph.getRootContextNode().getAllRelations())).count()) + " operators.";
+			stats += Integer.toString(new IteratorCounter(new MappingXdiEntityPolicyIterator(new MappingContextNodeXdiEntityIterator(graph.getRootContextNode().getAllContextNodes()))).count()) + " policies. ";
+			stats += Integer.toString(new IteratorCounter(new MappingRelationOperatorIterator(graph.getRootContextNode().getAllRelations())).count()) + " operators. ";
 
 			graph.close();
 		}

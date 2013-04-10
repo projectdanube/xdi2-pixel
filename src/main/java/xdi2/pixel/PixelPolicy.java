@@ -43,7 +43,7 @@ public class PixelPolicy {
 		Graph graph = MemoryGraphFactory.getInstance().openGraph();
 		LinkContract linkContract = LinkContracts.getLinkContract(graph.getRootContextNode(), true);
 
-		linkContract.addPermission(XDI3Segment.create("$do$send"), XDI3Segment.create("+channel{1}+event{2}"));
+		linkContract.addPermission(XDI3Segment.create("$do$signal"), XDI3Segment.create("+channel{}+event{}"));
 
 		Policy policyRoot = linkContract.getPolicyRoot(true);
 
@@ -124,37 +124,35 @@ public class PixelPolicy {
 	}
 
 	private static boolean isDeny(String effect) {
-		
+
 		return "deny".equals(effect) || "denies".equals(effect);
 	}
 
 	private static boolean isAllow(String effect) {
-		
+
 		return "allow".equals(effect) || "allows".equals(effect);
 	}
-	
+
 	private static void translatePolicyStmt(Map<?, ?> policy_stmt, Policy policyEvent) throws PixelParserException {
 
 		if (policyEvent == null) throw new NullPointerException();
 
 		// 'channel_id'
 
-		String eventXriString;
-
 		String channel_id = (String) policy_stmt.get("channel_id");
+
+		String channelXriString;
 
 		if ("any".equals(channel_id)) {
 
-			eventXriString = "+channel{}";
+			channelXriString = "+channel{2}";
 		} else if (channel_id != null) {
 
-			eventXriString = "+channel" + channel_id;
+			channelXriString = "+channel" + channel_id;
 		} else {
 
 			throw new PixelParserException("No 'channel_id'.");
 		}
-
-		eventXriString += "+event{2}";
 
 		// 'cloud_id'
 
@@ -162,7 +160,7 @@ public class PixelPolicy {
 
 		if (cloud_id != null) {
 
-			eventXriString = "(" + cloud_id + ")" + eventXriString;
+			channelXriString = "(" + cloud_id + ")" + channelXriString;
 		}
 
 		// 'event_filter', 'domain', 'type'
@@ -211,12 +209,19 @@ public class PixelPolicy {
 
 		// construct policy
 
+		String eventXriString = channelXriString + "+event{1}";
+
 		XDI3Segment eventXri = XDI3Segment.create(eventXriString);
 		XDI3Segment operationXri = XDI3Segment.create("$do$signal");
 
 		if (event_filter_domain != null) {
 
-			XDI3Statement statementXri = XDI3Statement.create("" + eventXri + "/+domain/" + "+" + event_filter_domain);
+			if ("all".equals(event_filter_domain))
+				event_filter_domain = "{}";
+			else
+				event_filter_domain = "+" + event_filter_domain;
+
+			XDI3Statement statementXri = XDI3Statement.create("" + eventXri + "/+domain/" + event_filter_domain);
 
 			GenericOperator.createGenericOperator(policyEvent, operationXri, statementXri);
 		}
@@ -239,7 +244,7 @@ public class PixelPolicy {
 
 			for (Object condition_type_relationship : condition_type_relationships) {
 
-				XDI3Statement statementXri = XDI3Statement.create("" + channel_id + "/" + (String) condition_type_relationship + "/" + "{$from}");
+				XDI3Statement statementXri = XDI3Statement.create("" + channelXriString + "/" + (String) condition_type_relationship + "/" + "{$from}");
 
 				if (Boolean.TRUE.equals(condition_sense))
 					TrueOperator.createTrueOperator(policyConditionTypeRelationships, GenericCondition.fromStatement(statementXri));
