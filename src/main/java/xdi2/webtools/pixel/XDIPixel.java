@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -21,13 +22,19 @@ import org.slf4j.LoggerFactory;
 import xdi2.core.Graph;
 import xdi2.core.features.contextfunctions.XdiAbstractEntity.MappingContextNodeXdiEntityIterator;
 import xdi2.core.features.linkcontracts.LinkContract;
+import xdi2.core.features.linkcontracts.condition.Condition;
+import xdi2.core.features.linkcontracts.operator.ConditionOperator;
+import xdi2.core.features.linkcontracts.operator.Operator;
 import xdi2.core.features.linkcontracts.operator.Operator.MappingRelationOperatorIterator;
 import xdi2.core.features.linkcontracts.policy.Policy.MappingXdiEntityPolicyIterator;
 import xdi2.core.impl.memory.MemoryGraphFactory;
 import xdi2.core.io.XDIWriter;
 import xdi2.core.io.XDIWriterRegistry;
 import xdi2.core.io.writers.XDIDisplayWriter;
+import xdi2.core.util.iterators.CastingIterator;
+import xdi2.core.util.iterators.DescendingIterator;
 import xdi2.core.util.iterators.IteratorCounter;
+import xdi2.core.util.iterators.NotNullIterator;
 import xdi2.pixel.PixelParser;
 import xdi2.pixel.PixelPolicy;
 
@@ -148,8 +155,9 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 
 		if (graph != null) {
 
-			stats += Integer.toString(new IteratorCounter(new MappingXdiEntityPolicyIterator(new MappingContextNodeXdiEntityIterator(graph.getRootContextNode().getAllContextNodes()))).count()) + " policies. ";
-			stats += Integer.toString(new IteratorCounter(new MappingRelationOperatorIterator(graph.getRootContextNode().getAllRelations())).count()) + " operators. ";
+			stats += Integer.toString(countPolicies(graph)) + " policies. ";
+			stats += Integer.toString(countOperators(graph)) + " operators. ";
+			stats += Integer.toString(countConditions(graph)) + " comparisons. ";
 
 			graph.close();
 		}
@@ -170,4 +178,32 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 
 		request.getRequestDispatcher("/XDIPixel.jsp").forward(request, response);
 	}   	  	    
+
+	private static int countPolicies(Graph graph) {
+
+		Iterator<?> iterator = new MappingXdiEntityPolicyIterator(new MappingContextNodeXdiEntityIterator(graph.getRootContextNode().getAllContextNodes()));
+		
+		return new IteratorCounter(iterator).count();
+	}
+
+	private static int countOperators(Graph graph) {
+
+		Iterator<?> iterator = new MappingRelationOperatorIterator(graph.getRootContextNode().getAllRelations());
+		
+		return new IteratorCounter(iterator).count();
+	}
+
+	private static int countConditions(Graph graph) {
+		
+		Iterator<?> iterator = new DescendingIterator<ConditionOperator, Condition> (new NotNullIterator<ConditionOperator> (new CastingIterator<Operator, ConditionOperator> (new MappingRelationOperatorIterator(graph.getRootContextNode().getAllRelations()), ConditionOperator.class))) {
+
+			@Override
+			public Iterator<Condition> descend(ConditionOperator operator) {
+				
+				return operator.getConditions();
+			}			
+		};
+		
+		return new IteratorCounter(iterator).count();
+	}
 }
