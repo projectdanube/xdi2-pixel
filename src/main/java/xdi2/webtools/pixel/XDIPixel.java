@@ -20,13 +20,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import xdi2.core.Graph;
-import xdi2.core.features.contextfunctions.XdiAbstractEntity.MappingContextNodeXdiEntityIterator;
 import xdi2.core.features.linkcontracts.LinkContract;
 import xdi2.core.features.linkcontracts.condition.Condition;
 import xdi2.core.features.linkcontracts.operator.ConditionOperator;
 import xdi2.core.features.linkcontracts.operator.Operator;
 import xdi2.core.features.linkcontracts.operator.Operator.MappingRelationOperatorIterator;
 import xdi2.core.features.linkcontracts.policy.Policy.MappingXdiEntityPolicyIterator;
+import xdi2.core.features.nodetypes.XdiAbstractEntity.MappingContextNodeXdiEntityIterator;
 import xdi2.core.impl.memory.MemoryGraphFactory;
 import xdi2.core.io.XDIWriter;
 import xdi2.core.io.XDIWriterRegistry;
@@ -121,10 +121,10 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 
 		Properties xdiWriterParameters = new Properties();
 
-		if ("on".equals(writeImplied)) xdiWriterParameters.setProperty(XDIWriterRegistry.PARAMETER_IMPLIED, "1");
-		if ("on".equals(writeOrdered)) xdiWriterParameters.setProperty(XDIWriterRegistry.PARAMETER_ORDERED, "1");
-		if ("on".equals(writeInner)) xdiWriterParameters.setProperty(XDIWriterRegistry.PARAMETER_INNER, "1");
-		if ("on".equals(writePretty)) xdiWriterParameters.setProperty(XDIWriterRegistry.PARAMETER_PRETTY, "1");
+		xdiWriterParameters.setProperty(XDIWriterRegistry.PARAMETER_IMPLIED, "on".equals(writeImplied) ? "1" : "0");
+		xdiWriterParameters.setProperty(XDIWriterRegistry.PARAMETER_ORDERED, "on".equals(writeOrdered) ? "1" : "0");
+		xdiWriterParameters.setProperty(XDIWriterRegistry.PARAMETER_INNER, "on".equals(writeInner) ? "1" : "0");
+		xdiWriterParameters.setProperty(XDIWriterRegistry.PARAMETER_PRETTY, "on".equals(writePretty) ? "1" : "0");
 
 		XDIWriter xdiResultWriter = XDIWriterRegistry.forFormat(resultFormat, xdiWriterParameters);
 		PixelPolicy pixelPolicy = null;
