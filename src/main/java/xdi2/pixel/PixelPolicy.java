@@ -45,79 +45,100 @@ public class PixelPolicy {
 
 		linkContract.addPermission(XDI3Segment.create("$do$signal"), XDI3Segment.create("+channel{}+event{}"));
 
-		Policy policyRoot = linkContract.getPolicyRoot(true);
+		Policy xdiPolicyRoot = linkContract.getPolicyRoot(true);
 
-		List<?> policy_stmts = (List<?>) hashMap.get("policy_stmts");
-		if (policy_stmts == null) return linkContract;
+		// 'decls'
 
-		int countDeny = countDenyEffect(policy_stmts);
-		int countAllow = countAllowEffect(policy_stmts);
+		List<?> decls = (List<?>) hashMap.get("decls");
 
-		for (Object policy_stmt : policy_stmts) {
+		Map<String, String> declsMap = new HashMap<String, String> ();
+
+		if (decls != null) {
+
+			for (Object decl : decls) {
+
+				String expr = (String) ((Map<?, ?>) decl).get("expr");
+				String lhs = (String) ((Map<?, ?>) decl).get("lhs");
+
+				declsMap.put(lhs, expr);
+			}
+		}
+
+		// 'policy'
+
+		List<?> policies = (List<?>) hashMap.get("policy");
+		if (policies == null) return linkContract;
+
+		int countDeny = countDenyEffect(policies);
+		int countAllow = countAllowEffect(policies);
+
+		for (Object policy : policies) {
 
 			// translate effect of current policy statement
 
-			String effect = (String) ((Map<?, ?>) policy_stmt).get("effect");
+			String effect = (String) ((Map<?, ?>) policy).get("effect");
 
-			Policy policy = policyRoot;
+			Policy xdiPolicy = xdiPolicyRoot;
 
 			if (isAllow(effect)) {
 
 				if (countDeny > 0) {
 
-					policy = policy.createAndPolicy(true);
+					xdiPolicy = xdiPolicy.createAndPolicy(true);
 				}
 
 				if (countAllow > 1) {
 
-					policy = policy.createOrPolicy(true);
+					xdiPolicy = xdiPolicy.createOrPolicy(true);
 				}
 
-				policy = policy.createAndPolicy(countAllow == 1);
+				xdiPolicy = xdiPolicy.createAndPolicy(countAllow == 1);
 			} else if (isDeny(effect)) {
 
 				if (countAllow > 0) {
 
-					policy = policy.createAndPolicy(true);
+					xdiPolicy = xdiPolicy.createAndPolicy(true);
 				}
 
-				policy = policy.createNotPolicy(true);
+				xdiPolicy = xdiPolicy.createNotPolicy(true);
 
 				if (countDeny > 1) {
 
-					policy = policy.createOrPolicy(true);
+					xdiPolicy = xdiPolicy.createOrPolicy(true);
 				}
 
-				policy = policy.createAndPolicy(countDeny == 1);
+				xdiPolicy = xdiPolicy.createAndPolicy(countDeny == 1);
 			}
 
 			// translate details of current policy statement
 
-			translatePolicyStmt((Map<?, ?>) policy_stmt, policy);
+			translatePolicyStmt((Map<?, ?>) policy, declsMap, xdiPolicy);
 		}
+
+		// done
 
 		return linkContract;
 	}
 
-	private static int countDenyEffect(List<?> policy_stmts) {
+	private static int countDenyEffect(List<?> policies) {
 
 		int count = 0;
 
-		for (Object policy_stmt : policy_stmts) {
+		for (Object policy : policies) {
 
-			if (isDeny((String) ((Map<?, ?>) policy_stmt).get("effect"))) count++;
+			if (isDeny((String) ((Map<?, ?>) policy).get("effect"))) count++;
 		}
 
 		return count;
 	}
 
-	private static int countAllowEffect(List<?> policy_stmts) {
+	private static int countAllowEffect(List<?> policies) {
 
 		int count = 0;
 
-		for (Object policy_stmt : policy_stmts) {
+		for (Object policy : policies) {
 
-			if (isAllow((String) ((Map<?, ?>) policy_stmt).get("effect"))) count++;
+			if (isAllow((String) ((Map<?, ?>) policy).get("effect"))) count++;
 		}
 
 		return count;
@@ -133,13 +154,13 @@ public class PixelPolicy {
 		return "allow".equals(effect) || "allows".equals(effect);
 	}
 
-	private static void translatePolicyStmt(Map<?, ?> policy_stmt, Policy policyEvent) throws PixelParserException {
+	private static void translatePolicyStmt(Map<?, ?> policy, Map<String, String> declsMap, Policy xdiPolicy) throws PixelParserException {
 
-		if (policyEvent == null) throw new NullPointerException();
+		if (xdiPolicy == null) throw new NullPointerException();
 
 		// 'channel_id'
 
-		String channel_id = (String) policy_stmt.get("channel_id");
+		String channel_id = (String) policy.get("channel_id");
 
 		String channelXriString;
 
@@ -156,16 +177,18 @@ public class PixelPolicy {
 
 		// 'cloud_id'
 
-		String cloud_id = (String) policy_stmt.get("cloud_id");
+		String cloud_id = (String) policy.get("cloud_id");
 
 		if (cloud_id != null) {
+
+			if (declsMap.containsKey(cloud_id)) cloud_id = declsMap.get(cloud_id);
 
 			channelXriString = "(" + cloud_id + ")" + channelXriString;
 		}
 
 		// 'event_filter', 'domain', 'type'
 
-		Map<?, ?> event_filter = (Map<?, ?>) policy_stmt.get("event_filter");
+		Map<?, ?> event_filter = (Map<?, ?>) policy.get("event_filter");
 
 		String event_filter_domain = null;
 		List<?> event_filter_types = null;
@@ -182,7 +205,7 @@ public class PixelPolicy {
 		List<?> condition_type_clouds = null;
 		List<?> condition_type_relationships = null;
 
-		Map<?, ?> condition = (Map<?, ?>) policy_stmt.get("condition");
+		Map<?, ?> condition = (Map<?, ?>) policy.get("condition");
 
 		if (condition != null) {
 
@@ -223,12 +246,12 @@ public class PixelPolicy {
 
 			XDI3Statement statementXri = XDI3Statement.create("" + eventXri + "/+domain/" + event_filter_domain);
 
-			GenericOperator.createGenericOperator(policyEvent, operationXri, statementXri);
+			GenericOperator.createGenericOperator(xdiPolicy, operationXri, statementXri);
 		}
 
 		if (event_filter_types != null && event_filter_types.size() > 0) {
 
-			Policy policyEventFilterType = event_filter_types.size() > 1 ? policyEvent.createOrPolicy(false) : policyEvent;
+			Policy policyEventFilterType = event_filter_types.size() > 1 ? xdiPolicy.createOrPolicy(false) : xdiPolicy;
 
 			for (Object event_filter_type : event_filter_types) {
 
@@ -240,7 +263,7 @@ public class PixelPolicy {
 
 		if (condition_type_relationships != null) {
 
-			Policy policyConditionTypeRelationships = condition_type_relationships.size() > 1 ? policyEvent.createOrPolicy(false) : policyEvent;
+			Policy policyConditionTypeRelationships = condition_type_relationships.size() > 1 ? xdiPolicy.createOrPolicy(false) : xdiPolicy;
 
 			for (Object condition_type_relationship : condition_type_relationships) {
 
@@ -255,9 +278,11 @@ public class PixelPolicy {
 
 		if (condition_type_clouds != null) {
 
-			Policy policyConditionTypeClouds = condition_type_clouds.size() > 1 ? policyEvent.createOrPolicy(false) : policyEvent;
+			Policy policyConditionTypeClouds = condition_type_clouds.size() > 1 ? xdiPolicy.createOrPolicy(false) : xdiPolicy;
 
 			for (Object condition_type_cloud : condition_type_clouds) {
+
+				if (declsMap.containsKey(condition_type_cloud)) condition_type_cloud = declsMap.get(condition_type_cloud);
 
 				XDI3Statement statementXri = XDI3Statement.create("" + (String) condition_type_cloud + "/" + "$is" + "/" + "{$from}");
 

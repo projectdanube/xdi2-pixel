@@ -182,28 +182,28 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 	private static int countPolicies(Graph graph) {
 
 		Iterator<?> iterator = new MappingXdiEntityPolicyIterator(new MappingContextNodeXdiEntityIterator(graph.getRootContextNode().getAllContextNodes()));
-		
+
 		return new IteratorCounter(iterator).count();
 	}
 
 	private static int countOperators(Graph graph) {
 
 		Iterator<?> iterator = new MappingRelationOperatorIterator(graph.getRootContextNode().getAllRelations());
-		
+
 		return new IteratorCounter(iterator).count();
 	}
 
 	private static int countConditions(Graph graph) {
-		
-		Iterator<?> iterator = new DescendingIterator<ConditionOperator, Condition> (new NotNullIterator<ConditionOperator> (new CastingIterator<Operator, ConditionOperator> (new MappingRelationOperatorIterator(graph.getRootContextNode().getAllRelations()), ConditionOperator.class))) {
+
+		Iterator<?> iterator = new DescendingIterator<ConditionOperator, Condition> (new NotNullIterator<ConditionOperator> (new CastingIterator<Operator, ConditionOperator> (new MappingRelationOperatorIterator(graph.getRootContextNode().getAllRelations()), ConditionOperator.class, true))) {
 
 			@Override
 			public Iterator<Condition> descend(ConditionOperator operator) {
-				
+
 				return operator.getConditions();
 			}			
 		};
-		
+
 		return new IteratorCounter(iterator).count();
 	}
 }

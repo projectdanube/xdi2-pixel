@@ -1,1 +1,2 @@
-deny cloudos:{subscribe, unsubscribe} events on channel =!345;
+policy
+  deny cloudos:{subscribe, unsubscribe} events on channel =!345;

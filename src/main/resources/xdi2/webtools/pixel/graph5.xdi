@@ -1,3 +1,4 @@
-cloud =!2222 denies cloudos:{subscribe, unsubscribe} events 
+policy
+  cloud =!2222 denies cloudos:{subscribe, unsubscribe} events 
 		on channel =!345 
 		if channel relationship is in [+owner, +friend+close];
