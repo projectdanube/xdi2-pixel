@@ -43,7 +43,7 @@ public class PixelPolicy {
 		Graph graph = MemoryGraphFactory.getInstance().openGraph();
 		LinkContract linkContract = LinkContracts.getLinkContract(graph.getRootContextNode(), true);
 
-		linkContract.addPermission(XDI3Segment.create("$do$signal"), XDI3Segment.create("[+event]{}[+event]{}"));
+		linkContract.addPermission(XDI3Segment.create("$do$signal"), XDI3Segment.create("[+channel]{}[+event]{}"));
 
 		Policy xdiPolicyRoot = linkContract.getPolicyRoot(true);
 
@@ -166,10 +166,10 @@ public class PixelPolicy {
 
 		if ("any".equals(channel_id)) {
 
-			channelXriString = "[+event]{}";
+			channelXriString = "[+channel]{}";
 		} else if (channel_id != null) {
 
-			channelXriString = "+channel" + channel_id;
+			channelXriString = "[+channel]" + channel_id;
 		} else {
 
 			throw new PixelParserException("No 'channel_id'.");
@@ -232,7 +232,7 @@ public class PixelPolicy {
 
 		// construct policy
 
-		String eventXriString = channelXriString + "+event{1}";
+		String eventXriString = channelXriString + "[+event]{1}";
 
 		XDI3Segment eventXri = XDI3Segment.create(eventXriString);
 		XDI3Segment operationXri = XDI3Segment.create("$do$signal");

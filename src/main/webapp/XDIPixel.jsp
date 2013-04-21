@@ -60,7 +60,7 @@
 		<%= request.getAttribute("stats") %>
 
 		<% if (request.getAttribute("output2") != null) { %>
-			Copy&amp;Paste: <textarea style="width: 100px; height: 1.2em; overflow: hidden"><%= request.getAttribute("output1") != null ? request.getAttribute("output1") : "" %></textarea>
+			Copy&amp;Paste: <textarea style="width: 100px; height: 1.2em; overflow: hidden"><%= request.getAttribute("output1") %></textarea>
 		<% } %>
 		</p>
 	<% } %>
@@ -70,14 +70,14 @@
 	<% if (request.getAttribute("output1") != null) { %>
 	    <div class="tabbertab">
 		<h2>XDI Link Contract</h2>
-		<div class="result"><pre><%= request.getAttribute("output1") != null ? request.getAttribute("output1") : "" %></pre></div><br>
+		<div class="result"><pre><%= request.getAttribute("output1") %></pre></div><br>
 		</div>
 	<% } %>
 
 	<% if (request.getAttribute("output2") != null) { %>
 	    <div class="tabbertab">
 		<h2>Pixel JSON</h2>
-		<div class="result"><pre><%= request.getAttribute("output2") != null ? request.getAttribute("output2") : "" %></pre></div><br>
+		<div class="result"><pre><%= request.getAttribute("output2") %></pre></div><br>
 		</div>
 	<% } %>
 	
