@@ -4,14 +4,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>XDI Pixel - Help</title>
+<title>xdi2-pixel - Help</title>
 <script type="text/javascript" src="tabber.js"></script>
 <link rel="stylesheet" target="_blank" href="style.css" TYPE="text/css" MEDIA="screen">
 </head>
 <body style="background-image: url('images/back.png'); background-repeat: repeat-y; margin-left: 60px;">
 
 	<div class="header">
-	<img src="images/logo64.png" align="middle">&nbsp;&nbsp;&nbsp;<span id="appname">XDI Pixel</span>
+	<img src="images/logo64.png" align="middle">&nbsp;&nbsp;&nbsp;<span id="appname">xdi2-pixel</span>
 	&nbsp;&nbsp;&nbsp;&nbsp;<a href="XDIPixel">Back...</a>
 	</div>
 

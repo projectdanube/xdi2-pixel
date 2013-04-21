@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>XDI Pixel</title>
+<title>xdi2-pixel</title>
 <script type="text/javascript" src="tabber.js"></script>
 <link rel="stylesheet" target="_blank" href="style.css" TYPE="text/css" MEDIA="screen">
 </head>
@@ -12,7 +12,7 @@
 	<div id="imgtop"><img id="imgtopleft" src="images/xdi2-topleft.png"><img id="imgtopright" src="images/xdi2-topright.png"></div>
 	<div id="main">
 	<div class="header">
-	<span id="appname">XDI Pixel</span>
+	<span id="appname">xdi2-pixel</span>
 	&nbsp;&nbsp;&nbsp;&nbsp;
 	<% for (int i=0; i<((Integer) request.getAttribute("sampleInputs")).intValue(); i++) { %>
 		<a href="XDIPixel?sample=<%= i+1 %>">Sample <%= i+1 %></a>&nbsp;&nbsp;
@@ -39,7 +39,6 @@
 		<option value="XDI/JSON" <%= resultFormat.equals("XDI/JSON") ? "selected" : "" %>>XDI/JSON</option>
 		<option value="XDI DISPLAY" <%= resultFormat.equals("XDI DISPLAY") ? "selected" : "" %>>XDI DISPLAY</option>
 		<option value="XDI/JSON/GOM" <%= resultFormat.equals("XDI/JSON/GOM") ? "selected" : "" %>>XDI/JSON/GOM</option>
-		<option value="KEYVALUE" <%= resultFormat.equals("KEYVALUE") ? "selected" : "" %>>KEYVALUE</option>
 		</select>
 
 		<input name="writeImplied" type="checkbox" <%= writeImplied.equals("on") ? "checked" : "" %>>implied=1
