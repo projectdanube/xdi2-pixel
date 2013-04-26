@@ -1,7 +1,7 @@
 decls
-  my_cloud = =!234; 
-  another_cloud = =!2121;
+  my_cloud = [=]!234; 
+  another_cloud = [=]!2121;
 policy
   cloud my_cloud allows all events on any channel;
-  deny cloudos:unsubscribe events on channel =!345 if raised by cloud another_cloud;
+  deny cloudos:unsubscribe events on channel [=]!345 if raised by cloud another_cloud;
   
