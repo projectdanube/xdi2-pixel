@@ -12,7 +12,7 @@ This is work in progress.
 
 ### How to build
 
-First, you need to build the main [XDI2](http://github.com/peacekeeper/xdi2) project.
+First, you need to build the main [XDI2](http://github.com/projectdanube/xdi2) project.
 
 After that, just run
 
