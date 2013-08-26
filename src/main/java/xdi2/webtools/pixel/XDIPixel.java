@@ -155,9 +155,9 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 
 		if (graph != null) {
 
-			stats += Integer.toString(countPolicies(graph)) + " policies. ";
-			stats += Integer.toString(countOperators(graph)) + " operators. ";
-			stats += Integer.toString(countConditions(graph)) + " comparisons. ";
+			stats += Long.toString(countPolicies(graph)) + " policies. ";
+			stats += Long.toString(countOperators(graph)) + " operators. ";
+			stats += Long.toString(countConditions(graph)) + " comparisons. ";
 
 			graph.close();
 		}
@@ -179,21 +179,21 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 		request.getRequestDispatcher("/XDIPixel.jsp").forward(request, response);
 	}   	  	    
 
-	private static int countPolicies(Graph graph) {
+	private static long countPolicies(Graph graph) {
 
 		Iterator<?> iterator = new MappingXdiEntityPolicyIterator(new MappingContextNodeXdiEntityIterator(graph.getRootContextNode().getAllContextNodes()));
 
 		return new IteratorCounter(iterator).count();
 	}
 
-	private static int countOperators(Graph graph) {
+	private static long countOperators(Graph graph) {
 
 		Iterator<?> iterator = new MappingRelationOperatorIterator(graph.getRootContextNode().getAllRelations());
 
 		return new IteratorCounter(iterator).count();
 	}
 
-	private static int countConditions(Graph graph) {
+	private static long countConditions(Graph graph) {
 
 		Iterator<?> iterator = new DescendingIterator<ConditionOperator, Condition> (new NotNullIterator<ConditionOperator> (new CastingIterator<Operator, ConditionOperator> (new MappingRelationOperatorIterator(graph.getRootContextNode().getAllRelations()), ConditionOperator.class, true))) {
 
