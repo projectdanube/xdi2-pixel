@@ -11,7 +11,6 @@ import xdi2.core.features.linkcontracts.LinkContracts;
 import xdi2.core.features.linkcontracts.condition.GenericCondition;
 import xdi2.core.features.linkcontracts.condition.IsCondition;
 import xdi2.core.features.linkcontracts.operator.FalseOperator;
-import xdi2.core.features.linkcontracts.operator.GenericOperator;
 import xdi2.core.features.linkcontracts.operator.TrueOperator;
 import xdi2.core.features.linkcontracts.policy.Policy;
 import xdi2.core.impl.memory.MemoryGraphFactory;
@@ -244,9 +243,9 @@ public class PixelPolicy {
 			else
 				event_filter_domain = "+" + event_filter_domain;
 
-			XDI3Statement statementXri = XDI3Statement.create("" + eventXri + "/+domain/" + event_filter_domain);
+			XDI3Statement statementXri = XDI3Statement.create("{$msg}$do/" + operationXri + "(" + eventXri + "/+domain/" + event_filter_domain + ")");
 
-			GenericOperator.createGenericOperator(xdiPolicy, operationXri, statementXri);
+			TrueOperator.createTrueOperator(xdiPolicy, GenericCondition.fromStatement(statementXri));
 		}
 
 		if (event_filter_types != null && event_filter_types.size() > 0) {
@@ -255,9 +254,9 @@ public class PixelPolicy {
 
 			for (Object event_filter_type : event_filter_types) {
 
-				XDI3Statement statementXri = XDI3Statement.create("" + eventXri + "/+type/" + "+" + (String) event_filter_type);
+				XDI3Statement statementXri = XDI3Statement.create("{$msg}$do/" + operationXri + "(" + eventXri + "/+type/" + "+" + (String) event_filter_type + ")");
 
-				GenericOperator.createGenericOperator(policyEventFilterType, operationXri, statementXri);
+				TrueOperator.createTrueOperator(policyEventFilterType, GenericCondition.fromStatement(statementXri));
 			}
 		}
 
