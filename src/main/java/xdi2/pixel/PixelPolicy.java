@@ -42,7 +42,7 @@ public class PixelPolicy {
 		Graph graph = MemoryGraphFactory.getInstance().openGraph();
 		LinkContract linkContract = LinkContracts.getLinkContract(graph.getRootContextNode(), true);
 
-		linkContract.setPermission(XDI3Segment.create("$do$signal"), XDI3Segment.create("[+channel]{}[+event]{}"));
+		linkContract.setPermissionTargetAddress(XDI3Segment.create("$do$signal"), XDI3Segment.create("[+channel]{}[+event]{}"));
 
 		Policy xdiPolicyRoot = linkContract.getPolicyRoot(true);
 
