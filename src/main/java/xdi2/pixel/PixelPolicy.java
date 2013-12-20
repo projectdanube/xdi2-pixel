@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import xdi2.core.Graph;
-import xdi2.core.features.linkcontracts.LinkContract;
+import xdi2.core.features.linkcontracts.LinkContractBase;
 import xdi2.core.features.linkcontracts.LinkContracts;
 import xdi2.core.features.linkcontracts.condition.GenericCondition;
 import xdi2.core.features.linkcontracts.condition.IsCondition;
@@ -20,9 +20,9 @@ import xdi2.core.xri3.XDI3Statement;
 public class PixelPolicy {
 
 	private HashMap<?, ?> hashMap;
-	private LinkContract linkContract;
+	private LinkContractBase linkContract;
 
-	private PixelPolicy(HashMap<?, ?> hashMap, LinkContract linkContract) { 
+	private PixelPolicy(HashMap<?, ?> hashMap, LinkContractBase linkContract) { 
 
 		this.hashMap = hashMap;
 		this.linkContract = linkContract;
@@ -30,17 +30,17 @@ public class PixelPolicy {
 
 	static PixelPolicy fromMap(HashMap<?, ?> hashMap) throws PixelParserException {
 
-		LinkContract linkContract = translate(hashMap);
+		LinkContractBase linkContract = translate(hashMap);
 
 		PixelPolicy pixelPolicy = new PixelPolicy(hashMap, linkContract);
 
 		return pixelPolicy;
 	}
 
-	private static LinkContract translate(HashMap<?, ?> hashMap) throws PixelParserException {
+	private static LinkContractBase translate(HashMap<?, ?> hashMap) throws PixelParserException {
 
 		Graph graph = MemoryGraphFactory.getInstance().openGraph();
-		LinkContract linkContract = LinkContracts.getLinkContract(graph.getRootContextNode(), true);
+		LinkContractBase linkContract = LinkContracts.getLinkContract(graph.getRootContextNode(), true);
 
 		linkContract.setPermissionTargetAddress(XDI3Segment.create("$do$signal"), XDI3Segment.create("[+channel]{}[+event]{}"));
 
@@ -298,7 +298,7 @@ public class PixelPolicy {
 		return this.hashMap;
 	}
 
-	public LinkContract getLinkContract() {
+	public LinkContractBase getLinkContract() {
 
 		return this.linkContract;
 	}

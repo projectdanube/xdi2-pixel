@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import xdi2.core.Graph;
-import xdi2.core.features.linkcontracts.LinkContract;
+import xdi2.core.features.linkcontracts.LinkContractBase;
 import xdi2.core.features.linkcontracts.condition.Condition;
 import xdi2.core.features.linkcontracts.operator.ConditionOperator;
 import xdi2.core.features.linkcontracts.operator.Operator;
@@ -128,7 +128,7 @@ public class XDIPixel extends javax.servlet.http.HttpServlet implements javax.se
 
 		XDIWriter xdiResultWriter = XDIWriterRegistry.forFormat(resultFormat, xdiWriterParameters);
 		PixelPolicy pixelPolicy = null;
-		LinkContract linkContract = null;
+		LinkContractBase linkContract = null;
 		Graph graph = null;
 
 		try {
