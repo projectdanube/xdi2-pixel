@@ -26,7 +26,7 @@
 	<!-- LISTENERS -->
 
 	<listener>
-		<listener-class>xdi2.server.servlet.PluginsLoaderListener</listener-class>
+		<listener-class>xdi2.transport.impl.http.impl.servlet.PluginsLoaderListener</listener-class>
 	</listener>
 
 	<listener>
